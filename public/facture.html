@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Facturation WhatsApp</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="/manifest.json" />
+  </head>
+  <body>
+    <script>
+      const token = localStorage.getItem("token");
+      fetch("/facture", {
+        headers: {
+          Authorization: token,
+        },
+      }).then((res) => {
+        if (!res.ok) {
+          window.location.href = "index.html";
+          throw new Error("Token invalide");
+        }
+      });
+    </script>
+
+    <div class="container">
+    <!-- Bouton icône simple pour historique -->
+
+    <div class="header-title">
+      <h2>Création de Facture</h2>
+      <a href="historique.html" class="history-btn" title="Voir l'historique des factures">🧾</a>
+    </div>
+    
+
+      <label for="logo">Logo du client</label>
+      <input type="file" id="logo" accept="image/*" />
+
+      <label for="signature">Signature</label>
+      <input type="file" id="signature" accept="image/*" />
+
+      <label for="client">Nom du client</label>
+      <input type="text" id="client" placeholder="Nom du client" />
+
+      <div id="products">
+        <div class="product">
+          <input type="text" placeholder="Produit" class="name" />
+          <input type="number" placeholder="Prix" class="price" />
+          <input type="number" placeholder="Quantité" class="qty" />
+        </div>
+      </div>
+
+      <button onclick="addProduct()"> Ajouter un produit</button>
+
+      <h3>Total : <span id="total">0</span> FCFA</h3>
+
+      <button onclick="generatePDF()">📨 Générer la facture</button>
+      <!-- Liens WhatsApp -->
+      <div style="margin-top: 10px">
+        <a id="whatsappLink" target="_blank" class="whatsapp-link">
+          📱 Envoyer message WhatsApp
+        </a>
+        <br />
+        <a
+        id="whatsappPDFLink"
+        target="_blank"
+        style="display: none"
+        class="whatsapp-link styled-link"
+      >
+        📤 Envoyer PDF via WhatsApp
+      </a>
+      
+      </div>
+      <hr />
+      
+
+    <script src="script.js"></script>
+    
+
+    <script>
+    function sauvegarderFacture() {
+      const listeProduits = [
+        { name: "Clou", qty: 2, price: 200 },
+        { name: "Marteau", qty: 1, price: 1000 }
+      ];
+    
+      const nomClient = "Mme Diarra";
+      const totalMontant = 1400;
+    
+      const nouvelleFacture = {
+        date: new Date().toISOString(),
+        client: nomClient,
+        products: listeProduits,
+        total: totalMontant
+      };
+    
+      let historique = JSON.parse(localStorage.getItem("facturesHistorique") || "[]");
+      historique.unshift(nouvelleFacture);
+      localStorage.setItem("facturesHistorique", JSON.stringify(historique));
+    
+      alert("Facture sauvegardée !");
+    }
+
+
+    // Exemple d'enregistrement
+let historique = JSON.parse(localStorage.getItem("facturesHistorique") || "[]");
+
+historique.push({
+  date: new Date().toISOString(),
+  client: "Jean Dupont",
+  products: [
+    { name: "Carrelage 30x30", qty: 12, price: 2500 },
+    { name: "Colle", qty: 3, price: 1500 }
+  ],
+  total: 34500
+});
+
+localStorage.setItem("facturesHistorique", JSON.stringify(historique));
+
+    </script>
+    
+  </body>
+</html>

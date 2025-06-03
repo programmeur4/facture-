@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Connexion</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/icons/logo-192.png" type="image/png" />
+    <meta name="theme-color" content="#0a74da" />
+  </head>
+  <body>
+    <h2>Connexion</h2>
+    <form id="loginForm">
+      <input
+        type="text"
+        placeholder="Clé de licence"
+        id="licence"
+        required
+      /><br />
+      <button type="submit">Se connecter</button>
+    </form>
+    <p id="message"></p>
+
+    <script>
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const licence = document.getElementById("licence").value;
+
+          fetch("/index", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ licence }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.token) {
+                localStorage.setItem("token", data.token);
+                window.location.href = "facture.html";
+              } else {
+                document.getElementById("message").textContent =
+                  "Clé de licence invalide";
+              }
+            })
+            .catch(() => {
+              document.getElementById("message").textContent =
+                "Erreur de connexion au serveur";
+            });
+        });
+    </script>
+  </body>
+</html>

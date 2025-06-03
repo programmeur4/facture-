@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Historique des Factures</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        max-width: 900px;
+        margin: auto;
+      }
+      h2 {
+        margin-bottom: 15px;
+      }
+      .controls {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      input[type="search"] {
+        flex-grow: 1;
+        padding: 8px;
+        font-size: 1rem;
+      }
+      button {
+        background-color: #007bff;
+        border: none;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      .empty-msg {
+        margin-top: 20px;
+        font-style: italic;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Historique des Factures</h2>
+
+    <div class="controls">
+      <input
+        type="search"
+        id="searchInput"
+        placeholder="🔎 Rechercher par nom de client..."
+        oninput="filterTable()"
+      />
+      <button onclick="clearHistory()">🗑️ Supprimer toute l’historique</button>
+      <button onclick="exportToExcel()">📄 Exporter en Excel</button>
+      <button onclick="exportToPDF()">📄 Exporter en PDF</button>
+    </div>
+
+    <table id="historyTable">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Client</th>
+          <th>Produits</th>
+          <th>Total (FCFA)</th>
+        </tr>
+      </thead>
+      <tbody id="historyBody">
+        <!-- Contenu dynamique -->
+      </tbody>
+    </table>
+
+    <div class="empty-msg" id="emptyMsg" style="display: none">
+      Aucune facture trouvée.
+    </div>
+
+    <script>
+      // Exemple de données d'historique stockées en localStorage
+      // Format attendu : tableau d'objets { date, client, products: [{name, qty, price}], total }
+      // Ici on simule un exemple:
+      let history = JSON.parse(
+        localStorage.getItem("facturesHistorique") || "[]"
+      );
+
+      // Fonction pour afficher l'historique dans le tableau
+      function displayHistory(data) {
+        const tbody = document.getElementById("historyBody");
+        tbody.innerHTML = "";
+
+        if (data.length === 0) {
+          document.getElementById("emptyMsg").style.display = "block";
+          return;
+        } else {
+          document.getElementById("emptyMsg").style.display = "none";
+        }
+
+        data.forEach((facture) => {
+          const tr = document.createElement("tr");
+
+          // Format date en français
+          const dateStr = new Date(facture.date).toLocaleDateString("fr-FR", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+
+          // Produits concaténés
+          const productsText = facture.products
+            .map((p) => `${p.name} x${p.qty} (${p.price} FCFA)`)
+            .join(", ");
+
+          tr.innerHTML = `
+          <td>${dateStr}</td>
+          <td>${facture.client}</td>
+          <td>${productsText}</td>
+          <td>${facture.total}</td>
+        `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // Filtrage par client (sur la colonne Client)
+      function filterTable() {
+        const searchTerm = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const filtered = history.filter((facture) =>
+          facture.client.toLowerCase().includes(searchTerm)
+        );
+        displayHistory(filtered);
+      }
+
+      // Supprimer tout l'historique (avec confirmation)
+      function clearHistory() {
+        if (
+          confirm(
+            "Voulez-vous vraiment supprimer tout l'historique des factures ?"
+          )
+        ) {
+          localStorage.removeItem("facturesHistorique");
+          history = [];
+          displayHistory(history);
+        }
+      }
+
+      // Export en Excel (format CSV simplifié)
+      function exportToExcel() {
+        if (history.length === 0) {
+          alert("Aucun historique à exporter.");
+          return;
+        }
+
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += "Date,Client,Produits,Total (FCFA)\n";
+        history.forEach((facture) => {
+          const dateStr = new Date(facture.date).toLocaleDateString("fr-FR");
+          const productsText = facture.products
+            .map((p) => `${p.name} x${p.qty} (${p.price})`)
+            .join(" | ");
+          const row = `"${dateStr}","${facture.client}","${productsText}","${facture.total}"\n`;
+          csvContent += row;
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "historique_factures.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      // Export en PDF basique via jsPDF (librairie externe)
+      function exportToPDF() {
+        if (history.length === 0) {
+          alert("Aucun historique à exporter.");
+          return;
+        }
+
+        // Charger jsPDF via CDN
+        if (!window.jspdf) {
+          const script = document.createElement("script");
+          script.src =
+            "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+          script.onload = generatePDFContent;
+          document.head.appendChild(script);
+        } else {
+          generatePDFContent();
+        }
+      }
+
+      function generatePDFContent() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.setFontSize(18);
+        doc.text("Historique des Factures", 14, 22);
+        doc.setFontSize(12);
+
+        let y = 30;
+        history.forEach((facture) => {
+          const dateStr = new Date(facture.date).toLocaleDateString("fr-FR");
+          const productsText = facture.products
+            .map((p) => `${p.name} x${p.qty} (${p.price} FCFA)`)
+            .join(", ");
+
+          const line = `Date: ${dateStr}\nClient: ${facture.client}\nProduits: ${productsText}\nTotal: ${facture.total} FCFA\n\n`;
+
+          const splitText = doc.splitTextToSize(line, 180);
+          if (y + splitText.length * 10 > 280) {
+            doc.addPage();
+            y = 20;
+          }
+          doc.text(splitText, 14, y);
+          y += splitText.length * 10;
+        });
+
+        doc.save("historique_factures.pdf");
+      }
+
+      // Initialiser l'affichage
+      displayHistory(history);
+    </script>
+  </body>
+</html>
