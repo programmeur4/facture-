@@ -11,6 +11,9 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "engines": {
+    "node": "18.x"
+  },
   "dependencies": {
     "body-parser": "^2.2.0",
     "cloudinary": "^2.6.1",
@@ -23,12 +26,4 @@
     "pdfkit": "^0.17.1",
     "streamifier": "^0.1.1"
   }
-}
-{
-  "client": "Jean Dupont",
-  "items": [
-    { "description": "Produit 1", "prix": 1000 },
-    { "description": "Produit 2", "prix": 1500 }
-  ],
-  "total": 2500
 }
