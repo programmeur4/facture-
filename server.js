@@ -4,6 +4,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+app.use(bodyParser.json({ limit: "20mb" })); // ou même '20mb' si nécessaire
+app.use(bodyParser.urlencoded({ limit: "20mb", extended: true }));
+
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const path = require("path");
