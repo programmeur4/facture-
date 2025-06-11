@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const path = require("path");
 const PDFDocument = require("pdfkit");
+const factureRoutes = require("./routes/factures");
 
 const app = express();
 app.use(cors());
@@ -22,6 +23,10 @@ const MONGO_URI = process.env.MONGO_URI;
 const PDF_FOLDER = path.join(__dirname, "factures");
 if (!fs.existsSync(PDF_FOLDER)) fs.mkdirSync(PDF_FOLDER);
 app.use("/factures", express.static(PDF_FOLDER));
+app.use("/api/factures", factureRoutes);
+
+const facturesRoute = require("./routes/factures");
+app.use("/api/factures", facturesRoute);
 
 // 🔌 Connexion MongoDB
 mongoose
@@ -81,9 +86,6 @@ app.post("/generate-pdf", verifyToken, (req, res) => {
 
   const filename = `facture-${client.replace(/\s+/g, "-")}-${Date.now()}.pdf`;
   const filepath = path.join(PDF_FOLDER, filename);
-  const doc = new PDFDocument({ margin: 50 });
-  const stream = fs.createWriteStream(filepath);
-  doc.pipe(stream);
 
   if (logo) {
     try {
