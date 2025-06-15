@@ -2,26 +2,110 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <title>Connexion</title>
+    <title>Connexion - FactureApp</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="manifest" href="/manifest.json" />
-
-    <link rel="manifest" href="/manifest.json" />
     <link rel="icon" href="/icons/logo-192.png" type="image/png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0a74da" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #0a74da, #004080);
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .login-container {
+        background: #fff;
+        padding: 30px;
+        border-radius: 16px;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        text-align: center;
+      }
+
+      h2 {
+        color: #0a74da;
+        margin-bottom: 10px;
+      }
+
+      p.description {
+        font-size: 14px;
+        color: #444;
+        margin-bottom: 25px;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+      }
+
+      button {
+        width: 100%;
+        background-color: #0a74da;
+        color: #fff;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #0954a1;
+      }
+
+      #message {
+        color: red;
+        margin-top: 15px;
+        font-size: 14px;
+      }
+
+      @media (max-width: 500px) {
+        .login-container {
+          padding: 20px;
+        }
+
+        input,
+        button {
+          font-size: 14px;
+        }
+      }
+    </style>
   </head>
   <body>
-    <h2>Connexion</h2>
-    <form id="loginForm">
-      <input
-        type="text"
-        placeholder="Clé de licence"
-        id="licence"
-        required
-      /><br />
-      <button type="submit">Se connecter</button>
-    </form>
-    <p id="message"></p>
+    <div class="login-container">
+      <h2>Connexion</h2>
+      <p class="description">
+        Bienvenue sur <strong>FactureApp</strong> !<br />
+        Générez, envoyez et archivez vos factures professionnelles en toute simplicité.
+      </p>
+      <form id="loginForm">
+        <input
+          type="text"
+          placeholder="Entrez votre clé de licence"
+          id="licence"
+          required
+        />
+        <button type="submit">Se connecter</button>
+      </form>
+      <p id="message"></p>
+    </div>
 
     <script>
       document
@@ -42,12 +126,12 @@
                 window.location.href = "facture.html";
               } else {
                 document.getElementById("message").textContent =
-                  "Clé de licence invalide";
+                  "❌ Clé de licence invalide";
               }
             })
             .catch(() => {
               document.getElementById("message").textContent =
-                "Erreur de connexion au serveur";
+                "⚠️ Erreur de connexion au serveur";
             });
         });
     </script>

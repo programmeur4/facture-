@@ -4,43 +4,41 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-app.use(bodyParser.json({ limit: "20mb" })); // ou même '20mb' si nécessaire
-app.use(bodyParser.urlencoded({ limit: "20mb", extended: true }));
-
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const path = require("path");
 const PDFDocument = require("pdfkit");
-const factureRoutes = require("./routes/factures");
 
+// Initialisation express
 const app = express();
+
+// Middlewares
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "20mb" }));
+app.use(bodyParser.urlencoded({ limit: "20mb", extended: true }));
 app.use(express.static("public"));
 
+// Variables d'environnement
 const PORT = process.env.PORT || 5000;
 const SECRET_KEY = process.env.SECRET_KEY;
 const MONGO_URI = process.env.MONGO_URI;
 
-// 📦 Dossier pour les PDF
+// 📁 Dossier PDF
 const PDF_FOLDER = path.join(__dirname, "factures");
 if (!fs.existsSync(PDF_FOLDER)) fs.mkdirSync(PDF_FOLDER);
 app.use("/factures", express.static(PDF_FOLDER));
-app.use("/api/factures", factureRoutes);
 
-const facturesRoute = require("./routes/factures");
-app.use("/api/factures", facturesRoute);
+// 📦 Route des factures (API REST)
+const factureRoutes = require("./routes/factures");
+app.use("/api/factures", factureRoutes);
 
 // 🔌 Connexion MongoDB
 mongoose
-  .connect(MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("✅ Connecté à MongoDB Atlas"))
   .catch((err) => console.error("❌ Erreur MongoDB:", err));
 
-// 🧾 Modèle Licence
+// 🧾 Modèle de licence
 const Licence = mongoose.model(
   "Licence",
   new mongoose.Schema({
@@ -48,7 +46,7 @@ const Licence = mongoose.model(
   })
 );
 
-// 🔐 Middleware de vérification du token
+// 🔐 Middleware JWT
 function verifyToken(req, res, next) {
   const token = req.headers.authorization;
   if (!token) return res.status(403).send("⛔ Token manquant.");
@@ -60,7 +58,7 @@ function verifyToken(req, res, next) {
   }
 }
 
-// 🔑 Route de connexion par licence
+// 🔑 Authentification par licence
 app.post("/index", async (req, res) => {
   const { licence } = req.body;
   if (!licence) return res.status(400).json({ message: "Licence requise." });
@@ -73,16 +71,15 @@ app.post("/index", async (req, res) => {
   res.json({ token });
 });
 
-// 🔒 Route protégée test
+// ✅ Route test sécurisée
 app.get("/facture", verifyToken, (req, res) => {
   res.send("✅ Accès autorisé à la facturation.");
 });
 
-// 🧾 Génération de PDF
+// 📄 Génération de PDF
 app.post("/generate-pdf", verifyToken, (req, res) => {
   const { client, products, total, logo, signature } = req.body;
 
-  // 🔍 Vérification des données
   if (!client || !Array.isArray(products) || !total) {
     return res.status(400).json({ message: "Champs requis manquants." });
   }
@@ -90,6 +87,11 @@ app.post("/generate-pdf", verifyToken, (req, res) => {
   const filename = `facture-${client.replace(/\s+/g, "-")}-${Date.now()}.pdf`;
   const filepath = path.join(PDF_FOLDER, filename);
 
+  const doc = new PDFDocument();
+  const stream = fs.createWriteStream(filepath);
+  doc.pipe(stream);
+
+  // Logo
   if (logo) {
     try {
       const logoBuffer = Buffer.from(logo.split(",")[1], "base64");
@@ -113,6 +115,7 @@ app.post("/generate-pdf", verifyToken, (req, res) => {
   doc.fontSize(16).text(`Total : ${total} FCFA`, { bold: true });
   doc.moveDown(2);
 
+  // Signature
   if (signature) {
     try {
       const signatureBuffer = Buffer.from(signature.split(",")[1], "base64");
@@ -130,6 +133,7 @@ app.post("/generate-pdf", verifyToken, (req, res) => {
   });
 });
 
+// 🚀 Démarrer le serveur
 app.listen(PORT, () => {
   console.log(`🚀 Serveur en ligne sur http://localhost:${PORT}`);
 });
