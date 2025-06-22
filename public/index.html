@@ -1,182 +1,187 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Connexion - FactureApp</title>
-  <style>
-    :root {
-      --primary: #4a6fa5;
-      --error: #d32f2f;
-      --success: #388e3c;
-    }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f8f9fa;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-    .login-container {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 450px;
-      padding: 40px;
-    }
-    .logo {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    .logo h1 {
-      color: var(--primary);
-      margin: 10px 0 5px;
-    }
-    .form-group {
-      margin-bottom: 20px;
-    }
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-      color: #555;
-    }
-    input {
-      width: 100%;
-      padding: 12px 15px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      font-size: 16px;
-      transition: border 0.3s;
-    }
-    input:focus {
-      border-color: var(--primary);
-      outline: none;
-    }
-    button {
-      width: 100%;
-      padding: 14px;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    button:hover {
-      background: #3a5a8c;
-    }
-    .alert {
-      padding: 12px;
-      border-radius: 6px;
-      margin-top: 20px;
-      text-align: center;
-    }
-    .alert-error {
-      background: #fde0e0;
-      color: var(--error);
-    }
-    .loading {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255,255,255,0.3);
-      border-radius: 50%;
-      border-top-color: white;
-      animation: spin 1s ease-in-out infinite;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-  </style>
-</head>
-<body>
-  <div class="login-container">
-    <div class="logo">
-      <h1>FactureApp</h1>
-      <p>Générez des factures professionnelles</p>
-    </div>
-
-    <form id="loginForm">
-      <div class="form-group">
-        <label for="licence">Clé de licence</label>
-        <input 
-          type="text" 
-          id="licence" 
-          name="licence" 
-          placeholder="Entrez votre clé de licence"
-          required
-        >
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connexion - FactureApp</title>
+    <style>
+      :root {
+        --primary: #4a6fa5;
+        --error: #d32f2f;
+        --success: #388e3c;
+      }
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: #f8f9fa;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+      .login-container {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 450px;
+        padding: 40px;
+      }
+      .logo {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .logo h1 {
+        color: var(--primary);
+        margin: 10px 0 5px;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #555;
+      }
+      input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 16px;
+        transition: border 0.3s;
+      }
+      input:focus {
+        border-color: var(--primary);
+        outline: none;
+      }
+      button {
+        width: 100%;
+        padding: 14px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      button:hover {
+        background: #3a5a8c;
+      }
+      .alert {
+        padding: 12px;
+        border-radius: 6px;
+        margin-top: 20px;
+        text-align: center;
+      }
+      .alert-error {
+        background: #fde0e0;
+        color: var(--error);
+      }
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 1s ease-in-out infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="logo">
+        <h1>FactureApp</h1>
+        <p>Générez des factures professionnelles</p>
       </div>
 
-      <button type="submit" id="submitBtn">
-        <span id="btnText">Se connecter</span>
-      </button>
-    </form>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="licence">Clé de licence</label>
+          <input
+            type="text"
+            id="licence"
+            name="licence"
+            placeholder="Entrez votre clé de licence"
+            required
+          />
+        </div>
 
-    <div id="message" class="alert" style="display: none;"></div>
-  </div>
+        <button type="submit" id="submitBtn">
+          <span id="btnText">Se connecter</span>
+        </button>
+      </form>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const form = document.getElementById('loginForm');
-      const messageEl = document.getElementById('message');
-      const submitBtn = document.getElementById('submitBtn');
-      const btnText = document.getElementById('btnText');
+      <div id="message" class="alert" style="display: none"></div>
+    </div>
 
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        // Reset UI
-        messageEl.style.display = 'none';
-        submitBtn.disabled = true;
-        btnText.innerHTML = 'Connexion en cours <span class="loading"></span>';
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("loginForm");
+        const messageEl = document.getElementById("message");
+        const submitBtn = document.getElementById("submitBtn");
+        const btnText = document.getElementById("btnText");
 
-        try {
-          const licence = document.getElementById('licence').value.trim();
-          if (!licence) throw new Error('Veuillez entrer une clé de licence');
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
 
-          const response = await fetch('http://localhost:5000/api/user/login', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ licence })
-          });
+          // Reset UI
+          messageEl.style.display = "none";
+          submitBtn.disabled = true;
+          btnText.innerHTML =
+            'Connexion en cours <span class="loading"></span>';
 
-          const data = await response.json();
+          try {
+            const licence = document.getElementById("licence").value.trim();
+            if (!licence) throw new Error("Veuillez entrer une clé de licence");
 
-          if (!response.ok) {
-            throw new Error(data.message || 'Échec de la connexion');
+            const response = await fetch(
+              "http://localhost:5000/api/user/login",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ licence }),
+              }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+              throw new Error(data.message || "Échec de la connexion");
+            }
+
+            // Stockage du token
+            localStorage.setItem("authToken", data.token);
+
+            // Redirection
+            if (data.logo && data.signature) {
+              window.location.href = "facture.html";
+            } else {
+              window.location.href = "setup.html";
+            }
+          } catch (error) {
+            messageEl.textContent = error.message;
+            messageEl.className = "alert alert-error";
+            messageEl.style.display = "block";
+            console.error("Erreur:", error);
+          } finally {
+            submitBtn.disabled = false;
+            btnText.textContent = "Se connecter";
           }
-
-          // Stockage du token
-          localStorage.setItem('authToken', data.token);
-          
-          // Redirection
-          if (data.logo && data.signature) {
-            window.location.href = 'facture.html';
-          } else {
-            window.location.href = 'setup.html';
-          }
-
-        } catch (error) {
-          messageEl.textContent = error.message;
-          messageEl.className = 'alert alert-error';
-          messageEl.style.display = 'block';
-          console.error('Erreur:', error);
-        } finally {
-          submitBtn.disabled = false;
-          btnText.textContent = 'Se connecter';
-        }
+        });
       });
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
