@@ -256,11 +256,14 @@
         }
 
         try {
-          const response = await fetch("http://localhost:5000/api/invoices", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          const response = await fetch(
+            "https://facture-4.onrender.com/api/invoices",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
 
           if (!response.ok) throw new Error("Erreur de chargement");
 
