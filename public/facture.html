@@ -4,118 +4,571 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Facturation WhatsApp</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="manifest" href="/manifest.json" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #4361ee;
+        --primary-dark: #3a56d4;
+        --secondary: #6c757d;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --success: #25d366;
+        --danger: #ef233c;
+        --border-radius: 10px;
+        --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        --transition: all 0.3s ease;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Inter", "Segoe UI", sans-serif;
+        background-color: #f5f7ff;
+        color: var(--dark);
+        line-height: 1.6;
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .header h2 {
+        color: var(--primary);
+        font-weight: 600;
+        font-size: 1.8rem;
+      }
+
+      .history-btn {
+        background: var(--primary);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: var(--transition);
+        box-shadow: 0 2px 5px rgba(67, 97, 238, 0.2);
+      }
+
+      .history-btn:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+      }
+
+      #branding {
+        text-align: center;
+        margin-bottom: 25px;
+      }
+
+      #logoDisplay {
+        max-height: 80px;
+        max-width: 200px;
+        object-fit: contain;
+        margin-bottom: 10px;
+        border-radius: 4px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: var(--dark);
+        font-size: 0.95rem;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+        transition: var(--transition);
+      }
+
+      input:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+      }
+
+      .product-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 40px;
+        gap: 10px;
+        margin-bottom: 10px;
+        align-items: center;
+      }
+
+      .remove-btn {
+        background: var(--danger);
+        color: white;
+        border: none;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .remove-btn:hover {
+        transform: scale(1.1);
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: var(--transition);
+        margin-right: 10px;
+        margin-bottom: 15px;
+      }
+
+      .btn:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(67, 97, 238, 0.2);
+      }
+
+      .btn i {
+        margin-right: 8px;
+      }
+
+      .btn-secondary {
+        background-color: var(--secondary);
+      }
+
+      .btn-secondary:hover {
+        background-color: #5a6268;
+      }
+
+      #total {
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 1.3rem;
+        margin: 20px 0;
+      }
+
+      .whatsapp-link {
+        display: inline-flex;
+        align-items: center;
+        margin-top: 15px;
+        padding: 10px 15px;
+        background-color: rgba(37, 211, 102, 0.1);
+        color: var(--success);
+        text-decoration: none;
+        font-weight: 500;
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+      }
+
+      .whatsapp-link i {
+        margin-right: 8px;
+        font-size: 1.2rem;
+      }
+
+      .whatsapp-link:hover {
+        background-color: rgba(37, 211, 102, 0.2);
+      }
+
+      #loading {
+        display: none;
+        margin: 20px 0;
+        padding: 15px;
+        background-color: rgba(67, 97, 238, 0.1);
+        color: var(--primary);
+        border-radius: var(--border-radius);
+        text-align: center;
+        font-weight: 500;
+      }
+
+      .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(67, 97, 238, 0.3);
+        border-radius: 50%;
+        border-top-color: var(--primary);
+        animation: spin 1s ease-in-out infinite;
+        margin-right: 10px;
+        vertical-align: middle;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+        }
+
+        .product-grid {
+          grid-template-columns: 1fr 1fr;
+          grid-template-rows: auto auto;
+          gap: 8px;
+        }
+
+        .product-grid input {
+          width: 100%;
+        }
+
+        .remove-btn {
+          grid-column: span 2;
+          justify-self: center;
+          margin-top: 5px;
+        }
+      }
+    </style>
   </head>
   <body>
-    <script>
-      const token = localStorage.getItem("token");
-      fetch("/facture", {
-        headers: {
-          Authorization: token,
-        },
-      }).then((res) => {
-        if (!res.ok) {
-          window.location.href = "index.html";
-          throw new Error("Token invalide");
-        }
-      });
-    </script>
-
     <div class="container">
-    <!-- Bouton icône simple pour historique -->
+      <div class="header">
+        <h2>Création de Facture</h2>
+        <a href="historique.html" class="history-btn" title="Voir l'historique">
+          <i class="fas fa-receipt"></i>
+        </a>
+      </div>
 
-    <div class="header-title">
-      <h2>Création de Facture</h2>
-      <a href="historique.html" class="history-btn" title="Voir l'historique des factures">🧾</a>
-    </div>
-    
+      <!-- Logo et signature récupérés -->
+      <div id="branding">
+        <img id="logoDisplay" src="" alt="Logo de l'entreprise" class="logo" />
+      </div>
 
-      <label for="logo">Logo du client</label>
-      <input type="file" id="logo" accept="image/*" />
+      <div class="form-group">
+        <label for="client">Nom du client</label>
+        <input
+          type="text"
+          id="client"
+          placeholder="Entrez le nom du client"
+          required
+        />
+      </div>
 
-      <label for="signature">Signature</label>
-      <input type="file" id="signature" accept="image/*" />
-
-      <label for="client">Nom du client</label>
-      <input type="text" id="client" placeholder="Nom du client" />
-
+      <h3>Produits et services</h3>
       <div id="products">
-        <div class="product">
-          <input type="text" placeholder="Produit" class="name" />
-          <input type="number" placeholder="Prix" class="price" />
-          <input type="number" placeholder="Quantité" class="qty" />
+        <div class="product-grid">
+          <input
+            type="text"
+            placeholder="Description du produit"
+            class="name"
+            required
+          />
+          <input
+            type="number"
+            placeholder="Prix"
+            class="price"
+            min="0"
+            step="0.01"
+            required
+          />
+          <input type="number" placeholder="Qté" class="qty" min="1" required />
+          <button class="remove-btn" onclick="removeProduct(this)" disabled>
+            <i class="fas fa-times"></i>
+          </button>
         </div>
       </div>
 
-      <button onclick="addProduct()"> Ajouter un produit</button>
+      <button onclick="addProduct()" class="btn btn-secondary">
+        <i class="fas fa-plus"></i> Ajouter un produit
+      </button>
 
-      <h3>Total : <span id="total">0</span> FCFA</h3>
+      <h3>Total : <span id="total">0.00</span> FCFA</h3>
 
-      <button onclick="generatePDF()">📨 Générer la facture</button>
-      <!-- Liens WhatsApp -->
-      <div style="margin-top: 10px">
-        <a id="whatsappLink" target="_blank" class="whatsapp-link">
-          📱 Envoyer message WhatsApp
-        </a>
-        <br />
-        <a
-        id="whatsappPDFLink"
-        target="_blank"
-        style="display: none"
-        class="whatsapp-link styled-link"
-      >
-        📤 Envoyer PDF via WhatsApp
-      </a>
-      
+      <button onclick="generatePDF()" class="btn" id="generateBtn">
+        <i class="fas fa-file-pdf"></i> Générer la facture
+      </button>
+
+      <div id="loading">
+        <span class="loading-spinner"></span> Génération de la facture en
+        cours...
       </div>
-      <hr />
-      
 
-    <script src="script.js"></script>
-    
+      <div class="action-links">
+        <a
+          id="whatsappLink"
+          target="_blank"
+          class="whatsapp-link"
+          style="display: none"
+        >
+          <i class="fab fa-whatsapp"></i> Envoyer message WhatsApp
+        </a>
+        <a
+          id="whatsappPDFLink"
+          target="_blank"
+          class="whatsapp-link"
+          style="display: none; margin-left: 10px"
+        >
+          <i class="fas fa-paperclip"></i> Envoyer PDF via WhatsApp
+        </a>
+      </div>
+    </div>
 
     <script>
-    function sauvegarderFacture() {
-      const listeProduits = [
-        { name: "Clou", qty: 2, price: 200 },
-        { name: "Marteau", qty: 1, price: 1000 }
-      ];
-    
-      const nomClient = "Mme Diarra";
-      const totalMontant = 1400;
-    
-      const nouvelleFacture = {
-        date: new Date().toISOString(),
-        client: nomClient,
-        products: listeProduits,
-        total: totalMontant
+      // Stockage des données utilisateur
+      let userData = {
+        logo: "",
+        signature: "",
+        companyName: "",
       };
-    
-      let historique = JSON.parse(localStorage.getItem("facturesHistorique") || "[]");
-      historique.unshift(nouvelleFacture);
-      localStorage.setItem("facturesHistorique", JSON.stringify(historique));
-    
-      alert("Facture sauvegardée !");
-    }
 
+      // Vérification de l'authentification
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        window.location.href = "index.html";
+      }
 
-    // Exemple d'enregistrement
-let historique = JSON.parse(localStorage.getItem("facturesHistorique") || "[]");
+      // Récupération des données utilisateur
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          const response = await fetch(
+            "http://localhost:5000/api/user/check-auth",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
 
-historique.push({
-  date: new Date().toISOString(),
-  client: "Jean Dupont",
-  products: [
-    { name: "Carrelage 30x30", qty: 12, price: 2500 },
-    { name: "Colle", qty: 3, price: 1500 }
-  ],
-  total: 34500
-});
+          if (!response.ok) throw new Error("Session invalide");
 
-localStorage.setItem("facturesHistorique", JSON.stringify(historique));
+          const data = await response.json();
+          userData = data;
 
+          if (data.logo) {
+            document.getElementById("logoDisplay").src = data.logo;
+          }
+
+          if (data.companyName) {
+            document.title = `Facturation - ${data.companyName}`;
+          }
+        } catch (error) {
+          console.error("Erreur:", error);
+          localStorage.removeItem("authToken");
+          window.location.href = "index.html";
+        }
+
+        // Calcul automatique du total
+        document
+          .getElementById("products")
+          .addEventListener("input", calculateTotal);
+      });
+
+      // Gestion des produits
+      function addProduct() {
+        const productsDiv = document.getElementById("products");
+        const newProduct = document.createElement("div");
+        newProduct.className = "product-grid";
+        newProduct.innerHTML = `
+          <input type="text" placeholder="Description du produit" class="name" required />
+          <input type="number" placeholder="Prix" class="price" min="0" step="0.01" required />
+          <input type="number" placeholder="Qté" class="qty" min="1" required />
+          <button class="remove-btn" onclick="removeProduct(this)">
+            <i class="fas fa-times"></i>
+          </button>
+        `;
+        productsDiv.appendChild(newProduct);
+
+        // Focus sur le premier champ du nouveau produit
+        newProduct.querySelector("input").focus();
+      }
+
+      function removeProduct(button) {
+        if (document.querySelectorAll(".product-grid").length > 1) {
+          button.parentElement.remove();
+          calculateTotal();
+        }
+      }
+
+      function calculateTotal() {
+        let total = 0;
+        document.querySelectorAll(".product-grid").forEach((product) => {
+          const price = parseFloat(product.querySelector(".price").value) || 0;
+          const qty = parseInt(product.querySelector(".qty").value) || 0;
+          total += price * qty;
+        });
+        document.getElementById("total").textContent = total.toFixed(2);
+      }
+      async function generatePDF() {
+        const client = document.getElementById("client").value.trim();
+        if (!client) {
+          alert("Veuillez entrer un nom de client");
+          document.getElementById("client").focus();
+          return;
+        }
+
+        // Validation des produits
+        const products = [];
+        let hasError = false;
+
+        document.querySelectorAll(".product-grid").forEach((product, index) => {
+          const name = product.querySelector(".name").value.trim();
+          const price = parseFloat(product.querySelector(".price").value);
+          const qty = parseInt(product.querySelector(".qty").value);
+
+          if (!name || isNaN(price) || isNaN(qty) || price <= 0 || qty <= 0) {
+            alert(`Produit ${index + 1} : Veuillez vérifier les informations`);
+            hasError = true;
+            return;
+          }
+
+          products.push({ name, price, qty });
+        });
+
+        if (hasError || products.length === 0) {
+          alert("Veuillez ajouter au moins un produit valide");
+          return;
+        }
+
+        const total = products
+          .reduce((sum, item) => sum + item.price * item.qty, 0)
+          .toFixed(2);
+
+        try {
+          // Afficher le loading
+          document.getElementById("generateBtn").disabled = true;
+          document.getElementById("loading").style.display = "block";
+
+          // Préparation des données
+          const requestData = {
+            client,
+            products,
+            total,
+            logo: userData.logo || null,
+            signature: userData.signature || null,
+            companyInfo: {
+              name: userData.companyName || "",
+              address: userData.companyAddress || "",
+              phone: userData.companyPhone || "",
+              email: userData.companyEmail || "",
+              siret: userData.companySiret || "",
+            },
+          };
+
+          // Étape 1: Générer le PDF
+          const response = await fetch(
+            "http://localhost:5000/api/generate-pdf",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify(requestData),
+            }
+          );
+
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(
+              errorData.message || "Erreur lors de la génération"
+            );
+          }
+
+          const data = await response.json();
+
+          if (!data.url) {
+            throw new Error("URL du PDF manquante");
+          }
+
+          // Étape 2: Sauvegarder dans l'historique
+          try {
+            const saveResponse = await fetch(
+              "http://localhost:5000/api/invoices",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  client,
+                  products,
+                  total,
+                  pdfUrl: data.url,
+                }),
+              }
+            );
+
+            if (!saveResponse.ok) {
+              console.warn(
+                "La facture a été générée mais n'a pas pu être sauvegardée dans l'historique"
+              );
+            }
+          } catch (saveError) {
+            console.error("Erreur sauvegarde historique:", saveError);
+            // On continue quand même même si l'historique échoue
+          }
+
+          // Affichage des liens WhatsApp
+          const whatsappMessage = `Bonjour ${client},\n\nVoici votre facture pour un montant total de ${total} FCFA.\n\nCordialement,\n${
+            userData.companyName || ""
+          }`;
+
+          document.getElementById(
+            "whatsappLink"
+          ).href = `https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`;
+          document.getElementById("whatsappLink").style.display = "inline-flex";
+
+          document.getElementById(
+            "whatsappPDFLink"
+          ).href = `https://wa.me/?text=${encodeURIComponent(
+            "Voici votre facture en pièce jointe"
+          )}&attachment=${encodeURIComponent(
+            "http://localhost:5000" + data.url
+          )}`;
+          document.getElementById("whatsappPDFLink").style.display =
+            "inline-flex";
+
+          // Ouverture du PDF dans un nouvel onglet
+          window.open("http://localhost:5000" + data.url, "_blank");
+        } catch (error) {
+          console.error("Erreur génération PDF:", error);
+          alert(`Erreur: ${error.message}`);
+        } finally {
+          document.getElementById("generateBtn").disabled = false;
+          document.getElementById("loading").style.display = "none";
+        }
+      }
     </script>
-    
   </body>
 </html>

@@ -4,104 +4,275 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Historique des Factures</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
+      :root {
+        --primary: #4361ee;
+        --primary-dark: #3a56d4;
+        --danger: #ef233c;
+        --success: #25d366;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --border-radius: 8px;
+        --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      }
+
       body {
-        font-family: Arial, sans-serif;
+        font-family: "Inter", Arial, sans-serif;
+        background-color: #f5f7ff;
         padding: 20px;
-        max-width: 900px;
-        margin: auto;
+        min-height: 100vh;
       }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+      }
+
       h2 {
-        margin-bottom: 15px;
+        color: var(--primary);
+        margin-bottom: 25px;
+        font-size: 1.8rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
       }
+
       .controls {
         display: flex;
-        gap: 10px;
-        margin-bottom: 20px;
+        gap: 15px;
+        margin-bottom: 25px;
         flex-wrap: wrap;
-        align-items: center;
       }
-      input[type="search"] {
+
+      .search-container {
         flex-grow: 1;
-        padding: 8px;
-        font-size: 1rem;
+        position: relative;
+        min-width: 250px;
       }
-      button {
-        background-color: #007bff;
-        border: none;
+
+      .search-container i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+      }
+
+      input[type="search"] {
+        width: 100%;
+        padding: 10px 15px 10px 40px;
+        font-size: 1rem;
+        border: 1px solid #ddd;
+        border-radius: var(--border-radius);
+        transition: all 0.3s ease;
+      }
+
+      input[type="search"]:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background-color: var(--primary);
         color: white;
-        padding: 8px 12px;
-        border-radius: 5px;
+        border: none;
+        padding: 10px 15px;
+        border-radius: var(--border-radius);
         cursor: pointer;
-        font-size: 1rem;
-        transition: background-color 0.3s ease;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
       }
-      button:hover {
-        background-color: #0056b3;
+
+      .btn:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       }
+
+      .btn-danger {
+        background-color: var(--danger);
+      }
+
+      .btn-success {
+        background-color: var(--success);
+      }
+
+      .table-container {
+        overflow-x: auto;
+        margin-top: 20px;
+        border-radius: var(--border-radius);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+
       table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 10px;
       }
+
       th,
       td {
-        border: 1px solid #ddd;
-        padding: 10px;
+        padding: 12px 15px;
         text-align: left;
+        border-bottom: 1px solid #eee;
       }
+
       th {
-        background-color: #f2f2f2;
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: var(--dark);
+        position: sticky;
+        top: 0;
       }
-      .empty-msg {
-        margin-top: 20px;
-        font-style: italic;
-        color: #666;
+
+      tr:hover {
+        background-color: #f5f7ff;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        background-color: #e9ecef;
+        color: var(--dark);
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 50px 20px;
+        color: #6c757d;
+      }
+
+      .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: #adb5bd;
+      }
+
+      .action-btn {
+        background: none;
+        border: none;
+        color: var(--primary);
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+      }
+
+      .action-btn:hover {
+        background-color: rgba(67, 97, 238, 0.1);
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+        }
+
+        .controls {
+          gap: 10px;
+        }
+
+        .btn {
+          padding: 8px 12px;
+          font-size: 0.9rem;
+        }
+
+        th,
+        td {
+          padding: 8px 10px;
+          font-size: 0.9rem;
+        }
       }
     </style>
   </head>
   <body>
-    <h2>Historique des Factures</h2>
+    <div class="container">
+      <h2><i class="fas fa-history"></i> Historique des Factures</h2>
 
-    <div class="controls">
-      <input
-        type="search"
-        id="searchInput"
-        placeholder="🔎 Rechercher par nom de client..."
-        oninput="filterTable()"
-      />
-      <button onclick="clearHistory()">🗑️ Supprimer toute l’historique</button>
-      <button onclick="exportToExcel()">📄 Exporter en Excel</button>
-      <button onclick="exportToPDF()">📄 Exporter en PDF</button>
-    </div>
+      <div class="controls">
+        <div class="search-container">
+          <i class="fas fa-search"></i>
+          <input
+            type="search"
+            id="searchInput"
+            placeholder="Rechercher par client..."
+            oninput="filterTable()"
+          />
+        </div>
+        <button class="btn btn-danger" onclick="clearHistory()">
+          <i class="fas fa-trash"></i> Supprimer tout
+        </button>
+        <button class="btn" onclick="exportToExcel()">
+          <i class="fas fa-file-excel"></i> Excel
+        </button>
+        <button class="btn btn-success" onclick="exportToPDF()">
+          <i class="fas fa-file-pdf"></i> PDF
+        </button>
+      </div>
 
-    <table id="historyTable">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Client</th>
-          <th>Produits</th>
-          <th>Total (FCFA)</th>
-        </tr>
-      </thead>
-      <tbody id="historyBody">
-        <!-- Contenu dynamique -->
-      </tbody>
-    </table>
+      <div class="table-container">
+        <table id="historyTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Client</th>
+              <th>Produits</th>
+              <th>Total</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody">
+            <!-- Contenu dynamique -->
+          </tbody>
+        </table>
+      </div>
 
-    <div class="empty-msg" id="emptyMsg" style="display: none">
-      Aucune facture trouvée.
+      <div class="empty-state" id="emptyMsg">
+        <i class="fas fa-file-invoice"></i>
+        <p>Aucune facture trouvée</p>
+      </div>
     </div>
 
     <script>
-      // Exemple de données d'historique stockées en localStorage
-      // Format attendu : tableau d'objets { date, client, products: [{name, qty, price}], total }
-      // Ici on simule un exemple:
-      let history = JSON.parse(
-        localStorage.getItem("facturesHistorique") || "[]"
-      );
+      // Charger l'historique depuis le serveur
+      async function loadHistory() {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          window.location.href = "index.html";
+          return;
+        }
 
-      // Fonction pour afficher l'historique dans le tableau
+        try {
+          const response = await fetch("http://localhost:5000/api/invoices", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!response.ok) throw new Error("Erreur de chargement");
+
+          const history = await response.json();
+          displayHistory(history);
+        } catch (error) {
+          console.error("Erreur:", error);
+          showError("Erreur de chargement des données");
+        }
+      }
+
+      // Afficher l'historique
       function displayHistory(data) {
         const tbody = document.getElementById("historyBody");
         tbody.innerHTML = "";
@@ -116,129 +287,195 @@
         data.forEach((facture) => {
           const tr = document.createElement("tr");
 
-          // Format date en français
-          const dateStr = new Date(facture.date).toLocaleDateString("fr-FR", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          });
+          // Format date
+          const dateStr = new Date(facture.createdAt).toLocaleDateString(
+            "fr-FR",
+            {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            }
+          );
 
-          // Produits concaténés
+          // Produits formatés
           const productsText = facture.products
-            .map((p) => `${p.name} x${p.qty} (${p.price} FCFA)`)
-            .join(", ");
+            .map((p) => `<span class="badge">${p.name} × ${p.qty}</span>`)
+            .join(" ");
 
           tr.innerHTML = `
-          <td>${dateStr}</td>
-          <td>${facture.client}</td>
-          <td>${productsText}</td>
-          <td>${facture.total}</td>
-        `;
+            <td>${dateStr}</td>
+            <td><strong>${facture.client}</strong></td>
+            <td>${productsText}</td>
+            <td><strong>${facture.total} FCFA</strong></td>
+            <td>
+              <button class="action-btn" title="Voir" onclick="viewInvoice('${facture._id}')">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="action-btn" title="Supprimer" onclick="deleteInvoice('${facture._id}')">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          `;
           tbody.appendChild(tr);
         });
       }
 
-      // Filtrage par client (sur la colonne Client)
+      // Filtrer le tableau
       function filterTable() {
         const searchTerm = document
           .getElementById("searchInput")
           .value.toLowerCase();
-        const filtered = history.filter((facture) =>
-          facture.client.toLowerCase().includes(searchTerm)
-        );
-        displayHistory(filtered);
-      }
+        const rows = document.querySelectorAll("#historyBody tr");
 
-      // Supprimer tout l'historique (avec confirmation)
-      function clearHistory() {
-        if (
-          confirm(
-            "Voulez-vous vraiment supprimer tout l'historique des factures ?"
-          )
-        ) {
-          localStorage.removeItem("facturesHistorique");
-          history = [];
-          displayHistory(history);
-        }
-      }
+        let hasVisibleRows = false;
 
-      // Export en Excel (format CSV simplifié)
-      function exportToExcel() {
-        if (history.length === 0) {
-          alert("Aucun historique à exporter.");
-          return;
-        }
-
-        let csvContent = "data:text/csv;charset=utf-8,";
-        csvContent += "Date,Client,Produits,Total (FCFA)\n";
-        history.forEach((facture) => {
-          const dateStr = new Date(facture.date).toLocaleDateString("fr-FR");
-          const productsText = facture.products
-            .map((p) => `${p.name} x${p.qty} (${p.price})`)
-            .join(" | ");
-          const row = `"${dateStr}","${facture.client}","${productsText}","${facture.total}"\n`;
-          csvContent += row;
-        });
-
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "historique_factures.csv");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-
-      // Export en PDF basique via jsPDF (librairie externe)
-      function exportToPDF() {
-        if (history.length === 0) {
-          alert("Aucun historique à exporter.");
-          return;
-        }
-
-        // Charger jsPDF via CDN
-        if (!window.jspdf) {
-          const script = document.createElement("script");
-          script.src =
-            "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
-          script.onload = generatePDFContent;
-          document.head.appendChild(script);
-        } else {
-          generatePDFContent();
-        }
-      }
-
-      function generatePDFContent() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
-        doc.setFontSize(18);
-        doc.text("Historique des Factures", 14, 22);
-        doc.setFontSize(12);
-
-        let y = 30;
-        history.forEach((facture) => {
-          const dateStr = new Date(facture.date).toLocaleDateString("fr-FR");
-          const productsText = facture.products
-            .map((p) => `${p.name} x${p.qty} (${p.price} FCFA)`)
-            .join(", ");
-
-          const line = `Date: ${dateStr}\nClient: ${facture.client}\nProduits: ${productsText}\nTotal: ${facture.total} FCFA\n\n`;
-
-          const splitText = doc.splitTextToSize(line, 180);
-          if (y + splitText.length * 10 > 280) {
-            doc.addPage();
-            y = 20;
+        rows.forEach((row) => {
+          const client = row
+            .querySelector("td:nth-child(2)")
+            .textContent.toLowerCase();
+          if (client.includes(searchTerm)) {
+            row.style.display = "";
+            hasVisibleRows = true;
+          } else {
+            row.style.display = "none";
           }
-          doc.text(splitText, 14, y);
-          y += splitText.length * 10;
         });
 
-        doc.save("historique_factures.pdf");
+        document.getElementById("emptyMsg").style.display = hasVisibleRows
+          ? "none"
+          : "block";
       }
 
-      // Initialiser l'affichage
-      displayHistory(history);
+      // Supprimer une facture
+      async function deleteInvoice(id) {
+        if (!confirm("Supprimer cette facture ?")) return;
+
+        try {
+          const token = localStorage.getItem("authToken");
+          const response = await fetch(
+            `http://localhost:5000/api/invoices/${id}`,
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (!response.ok) throw new Error("Erreur de suppression");
+
+          loadHistory(); // Recharger l'historique
+        } catch (error) {
+          console.error("Erreur:", error);
+          showError("Erreur lors de la suppression");
+        }
+      }
+
+      // Voir une facture
+      function viewInvoice(id) {
+        window.open(`http://localhost:5000/api/invoices/${id}/pdf`, "_blank");
+      }
+
+      // Supprimer tout l'historique
+      async function clearHistory() {
+        if (
+          !confirm(
+            "Supprimer TOUT l'historique ? Cette action est irréversible."
+          )
+        )
+          return;
+
+        try {
+          const token = localStorage.getItem("authToken");
+          const response = await fetch("http://localhost:5000/api/invoices", {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!response.ok) throw new Error("Erreur de suppression");
+
+          loadHistory(); // Recharger l'historique
+        } catch (error) {
+          console.error("Erreur:", error);
+          showError("Erreur lors de la suppression");
+        }
+      }
+
+      // Exporter en Excel
+      async function exportToExcel() {
+        try {
+          const token = localStorage.getItem("authToken");
+          const response = await fetch(
+            "http://localhost:5000/api/invoices/export/excel",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (!response.ok) throw new Error("Erreur d'export");
+
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "historique_factures.xlsx";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        } catch (error) {
+          console.error("Erreur:", error);
+          showError("Erreur lors de l'export Excel");
+        }
+      }
+
+      // Exporter en PDF
+      async function exportToPDF() {
+        try {
+          const token = localStorage.getItem("authToken");
+          const response = await fetch(
+            "http://localhost:5000/api/invoices/export/pdf",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (!response.ok) throw new Error("Erreur d'export");
+
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "historique_factures.pdf";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        } catch (error) {
+          console.error("Erreur:", error);
+          showError("Erreur lors de l'export PDF");
+        }
+      }
+
+      // Afficher une erreur
+      function showError(message) {
+        const emptyMsg = document.getElementById("emptyMsg");
+        emptyMsg.innerHTML = `
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>${message}</p>
+          <button class="btn" onclick="loadHistory()">
+            <i class="fas fa-sync-alt"></i> Réessayer
+          </button>
+        `;
+        emptyMsg.style.display = "block";
+      }
+
+      // Initialiser
+      document.addEventListener("DOMContentLoaded", loadHistory);
     </script>
   </body>
 </html>

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Configurer Logo et Signature</title>
+    <style>
+      :root {
+        --primary: #4361ee;
+        --primary-dark: #3a56d4;
+        --error: #ef233c;
+        --success: #2ecc71;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --gray: #6c757d;
+        --border-radius: 8px;
+        --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f0f2f5;
+        color: var(--dark);
+        line-height: 1.6;
+        padding: 20px;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 600px;
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        overflow: hidden;
+        margin: 20px;
+      }
+
+      .header {
+        background: var(--primary);
+        color: white;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .header h2 {
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .header p {
+        opacity: 0.9;
+        font-size: 0.9rem;
+      }
+
+      .form-container {
+        padding: 25px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        font-size: 0.95rem;
+      }
+
+      label.required:after {
+        content: " *";
+        color: var(--error);
+      }
+
+      .form-hint {
+        font-size: 0.8rem;
+        color: var(--gray);
+        margin-top: -5px;
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="tel"],
+      input[type="file"] {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+        transition: var(--transition);
+      }
+
+      input[type="text"]:focus,
+      input[type="email"]:focus,
+      input[type="tel"]:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+      }
+
+      .file-input-container {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        width: 100%;
+      }
+
+      .file-input-button {
+        border: 1px dashed #ccc;
+        border-radius: var(--border-radius);
+        padding: 30px;
+        text-align: center;
+        cursor: pointer;
+        transition: var(--transition);
+        background-color: #f9f9f9;
+      }
+
+      .file-input-button:hover {
+        border-color: var(--primary);
+        background-color: #f0f4ff;
+      }
+
+      .file-input-button i {
+        font-size: 2rem;
+        color: var(--primary);
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      .file-input-button p {
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+
+      .file-input-button small {
+        color: var(--gray);
+      }
+
+      input[type="file"] {
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+
+      .preview-container {
+        display: flex;
+        gap: 15px;
+        margin-top: 15px;
+      }
+
+      .preview-box {
+        width: 80px;
+        height: 80px;
+        border-radius: 4px;
+        overflow: hidden;
+        border: 1px solid #eee;
+        position: relative;
+      }
+
+      .preview-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: #f5f5f5;
+      }
+
+      .preview-box .remove-btn {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        background: var(--error);
+        color: white;
+        border: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        font-size: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      button[type="submit"] {
+        width: 100%;
+        padding: 14px;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+        margin-top: 10px;
+      }
+
+      button[type="submit"]:hover {
+        background-color: var(--primary-dark);
+      }
+
+      button[type="submit"]:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+
+      #result {
+        margin-top: 20px;
+        padding: 12px;
+        border-radius: var(--border-radius);
+        text-align: center;
+        font-size: 0.95rem;
+      }
+
+      .success {
+        background-color: rgba(46, 204, 113, 0.1);
+        color: var(--success);
+        border: 1px solid var(--success);
+      }
+
+      .error {
+        background-color: rgba(239, 35, 60, 0.1);
+        color: var(--error);
+        border: 1px solid var(--error);
+      }
+
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 1s ease-in-out infinite;
+        vertical-align: middle;
+        margin-right: 8px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 10px;
+        }
+
+        .container {
+          margin: 10px 0;
+        }
+
+        .form-container {
+          padding: 20px;
+        }
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h2>Configuration de votre entreprise</h2>
+        <p>Ajoutez votre logo, signature et informations professionnelles</p>
+      </div>
+
+      <div class="form-container">
+        <form id="uploadForm" enctype="multipart/form-data" novalidate>
+          <div class="form-group">
+            <label for="logo" class="required">Logo de l'entreprise</label>
+            <div class="form-hint">Format JPG, PNG ou SVG (max 2MB)</div>
+            <div class="file-input-container">
+              <div class="file-input-button">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Cliquez pour télécharger</p>
+                <small>ou glissez-déposez votre fichier</small>
+              </div>
+              <input
+                type="file"
+                id="logo"
+                name="logo"
+                accept="image/*"
+                required
+              />
+            </div>
+            <div class="preview-container" id="logo-preview"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="signature" class="required">Votre signature</label>
+            <div class="form-hint">Format JPG, PNG ou SVG (max 2MB)</div>
+            <div class="file-input-container">
+              <div class="file-input-button">
+                <i class="fas fa-signature"></i>
+                <p>Cliquez pour télécharger</p>
+                <small>ou glissez-déposez votre fichier</small>
+              </div>
+              <input
+                type="file"
+                id="signature"
+                name="signature"
+                accept="image/*"
+                required
+              />
+            </div>
+            <div class="preview-container" id="signature-preview"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="companyName" class="required"
+              >Nom de l'entreprise</label
+            >
+            <input
+              type="text"
+              id="companyName"
+              name="companyName"
+              placeholder="Ex: Mon Entreprise SARL"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="companyDescription">Description de l'activité</label>
+            <input
+              type="text"
+              id="companyDescription"
+              name="companyDescription"
+              placeholder="Ex: Création de sites web et applications"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="companyAddress">Adresse</label>
+            <input
+              type="text"
+              id="companyAddress"
+              name="companyAddress"
+              placeholder="Ex: 123 Rue Principale, 75000 Paris"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="companyPhone">Téléphone</label>
+            <input
+              type="tel"
+              id="companyPhone"
+              name="companyPhone"
+              placeholder="Ex: +33 1 23 45 67 89"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="companyEmail">Email</label>
+            <input
+              type="email"
+              id="companyEmail"
+              name="companyEmail"
+              placeholder="Ex: contact@monentreprise.com"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="companySiret">Numéro SIRET</label>
+            <input
+              type="text"
+              id="companySiret"
+              name="companySiret"
+              placeholder="Ex: 123 456 789 00012"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="socialMediaWebsite">Site Web</label>
+            <input
+              type="text"
+              id="socialMediaWebsite"
+              name="socialMedia[website]"
+              placeholder="Ex: https://monentreprise.com"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="socialMediaFacebook">Facebook</label>
+            <input
+              type="text"
+              id="socialMediaFacebook"
+              name="socialMedia[facebook]"
+              placeholder="Ex: https://facebook.com/monentreprise"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="socialMediaInstagram">Instagram</label>
+            <input
+              type="text"
+              id="socialMediaInstagram"
+              name="socialMedia[instagram]"
+              placeholder="Ex: https://instagram.com/monentreprise"
+            />
+          </div>
+
+          <button type="submit" id="submitBtn">
+            <span id="btnText"
+              ><i class="fas fa-save"></i> Enregistrer la configuration</span
+            >
+          </button>
+        </form>
+
+        <div id="result"></div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("uploadForm");
+        const resultDiv = document.getElementById("result");
+        const submitBtn = document.getElementById("submitBtn");
+        const btnText = document.getElementById("btnText");
+        const logoPreview = document.getElementById("logo-preview");
+        const signaturePreview = document.getElementById("signature-preview");
+
+        // Vérification de l'authentification
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          window.location.href = "index.html";
+          return;
+        }
+
+        // Gestion des prévisualisations d'images
+        const handleImagePreview = (input, previewContainer) => {
+          if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+              previewContainer.innerHTML = `
+                <div class="preview-box">
+                  <img src="${e.target.result}" alt="Preview" />
+                  <button class="remove-btn" type="button">&times;</button>
+                </div>
+              `;
+
+              // Ajout du gestionnaire pour le bouton de suppression
+              previewContainer
+                .querySelector(".remove-btn")
+                .addEventListener("click", () => {
+                  input.value = "";
+                  previewContainer.innerHTML = "";
+                });
+            };
+
+            reader.readAsDataURL(input.files[0]);
+          }
+        };
+
+        // Écouteurs pour les changements de fichiers
+        document.getElementById("logo").addEventListener("change", function () {
+          handleImagePreview(this, logoPreview);
+        });
+
+        document
+          .getElementById("signature")
+          .addEventListener("change", function () {
+            handleImagePreview(this, signaturePreview);
+          });
+
+        // Gestion de la soumission du formulaire
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          // Vérification des champs obligatoires
+          if (!form.logo.files[0]) {
+            showResult("Veuillez télécharger un logo", false);
+            form.logo.focus();
+            return;
+          }
+
+          if (!form.signature.files[0]) {
+            showResult("Veuillez télécharger une signature", false);
+            form.signature.focus();
+            return;
+          }
+
+          // Vérification taille fichiers (max 2MB)
+          const logoFile = form.logo.files[0];
+          const signatureFile = form.signature.files[0];
+
+          if (logoFile.size > 2 * 1024 * 1024) {
+            showResult("Le logo dépasse la taille maximale de 2MB", false);
+            return;
+          }
+
+          if (signatureFile.size > 2 * 1024 * 1024) {
+            showResult("La signature dépasse la taille maximale de 2MB", false);
+            return;
+          }
+
+          // Affichage du statut de chargement
+          submitBtn.disabled = true;
+          btnText.innerHTML =
+            '<span class="loading"></span> Enregistrement en cours...';
+
+          try {
+            const formData = new FormData(form);
+
+            const response = await fetch(
+              "http://localhost:5000/api/user/upload",
+              {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+                body: formData,
+              }
+            );
+
+            if (!response.ok) {
+              const errorData = await response.json().catch(() => ({}));
+              throw new Error(
+                errorData.message || "Erreur lors de l'enregistrement"
+              );
+            }
+
+            const data = await response.json();
+            showResult(
+              "Configuration enregistrée avec succès ! Redirection...",
+              true
+            );
+
+            setTimeout(() => {
+              window.location.href = "facture.html";
+            }, 1500);
+          } catch (error) {
+            console.error("Erreur:", error);
+            showResult(error.message, false);
+
+            if (error.message.toLowerCase().includes("token")) {
+              localStorage.removeItem("authToken");
+              setTimeout(() => (window.location.href = "index.html"), 1500);
+            }
+          } finally {
+            submitBtn.disabled = false;
+            btnText.innerHTML =
+              '<i class="fas fa-save"></i> Enregistrer la configuration';
+          }
+        });
+
+        // Fonction pour afficher les résultats
+        function showResult(message, isSuccess) {
+          resultDiv.textContent = message;
+          resultDiv.className = isSuccess ? "success" : "error";
+          resultDiv.style.display = "block";
+        }
+      });
+    </script>
+  </body>
+</html>

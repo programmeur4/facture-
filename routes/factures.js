@@ -8,28 +8,17 @@ router.post("/generate", async (req, res) => {
   try {
     const { client, items, total } = req.body;
 
-    if (!client || !items || !total) {
-      return res.status(400).json({ message: "Données incomplètes" });
-    }
-
-    const doc = new PDFDocument();
+    const doc = new PDFDocument({ margin: 50 });
     let buffers = [];
 
-    doc.on("data", (data) => buffers.push(data));
+    doc.on("data", buffers.push.bind(buffers));
     doc.on("end", async () => {
       const pdfBuffer = Buffer.concat(buffers);
 
       const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          resource_type: "raw",
-          folder: "factures",
-          public_id: `facture-${Date.now()}`,
-        },
+        { resource_type: "raw", folder: "factures" },
         (error, result) => {
-          if (error) {
-            console.error("Erreur upload Cloudinary:", error);
-            return res.status(500).json({ error: "Erreur d'upload Cloudinary" });
-          }
+          if (error) return res.status(500).json({ error });
           return res.status(200).json({ url: result.secure_url });
         }
       );
@@ -37,9 +26,18 @@ router.post("/generate", async (req, res) => {
       streamifier.createReadStream(pdfBuffer).pipe(uploadStream);
     });
 
-    // 📄 Contenu du PDF
-    doc.fontSize(16).text(`Facture pour : ${client}`, { align: "left" });
+    // 🖼️ Logo (remplace par ton URL Cloudinary si dispo)
+    doc.image("public/logo.png", 50, 45, { width: 100 });
+
+    // 🧾 En-tête
+    doc.fontSize(20).text("Facture Professionnelle", 50, 120);
+    doc.fontSize(12).text(`Date : ${new Date().toLocaleDateString()}`, 50, 145);
+    doc.text(`Client : ${client}`, 50, 160);
     doc.moveDown();
+
+    // 🧮 Tableau des articles
+    doc.moveDown();
+    doc.fontSize(14).text("Détails :", { underline: true });
 
     items.forEach((item, index) => {
       doc
@@ -48,11 +46,23 @@ router.post("/generate", async (req, res) => {
     });
 
     doc.moveDown();
-    doc.fontSize(14).text(`Total : ${total} FCFA`, { align: "right" });
+    doc.fontSize(14).text(`Total à payer : ${total} FCFA`, {
+      align: "right",
+      bold: true,
+    });
+
+    // ✍️ Signature
+    doc.moveDown();
+    doc.moveDown();
+    doc.text("Signature du vendeur :", 50, doc.y + 20);
+    doc.image("public/signature.png", 200, doc.y - 10, { width: 100 });
+
     doc.end();
   } catch (err) {
-    console.error("Erreur lors de la génération de la facture:", err);
-    res.status(500).json({ message: "Erreur serveur" });
+    console.error("Erreur de génération de facture:", err);
+    res
+      .status(500)
+      .json({ message: "Erreur lors de la génération de la facture" });
   }
 });
 
