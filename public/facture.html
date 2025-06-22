@@ -363,7 +363,7 @@
       document.addEventListener("DOMContentLoaded", async () => {
         try {
           const response = await fetch(
-            "http://localhost:5000/api/user/check-auth",
+            "https://facture-4.onrender.com/api/user/check-auth",
             {
               headers: { Authorization: `Bearer ${token}` },
             }
@@ -486,7 +486,7 @@
 
           // Étape 1: Générer le PDF
           const response = await fetch(
-            "http://localhost:5000/api/generate-pdf",
+            "https://facture-4.onrender.com/api/generate-pdf",
             {
               method: "POST",
               headers: {
@@ -513,7 +513,7 @@
           // Étape 2: Sauvegarder dans l'historique
           try {
             const saveResponse = await fetch(
-              "http://localhost:5000/api/invoices",
+              "https://facture-4.onrender.com/api/invoices",
               {
                 method: "POST",
                 headers: {
@@ -554,13 +554,13 @@
           ).href = `https://wa.me/?text=${encodeURIComponent(
             "Voici votre facture en pièce jointe"
           )}&attachment=${encodeURIComponent(
-            "http://localhost:5000" + data.url
+            "https://facture-4.onrender.com" + data.url
           )}`;
           document.getElementById("whatsappPDFLink").style.display =
             "inline-flex";
 
           // Ouverture du PDF dans un nouvel onglet
-          window.open("http://localhost:5000" + data.url, "_blank");
+          window.open("https://facture-4.onrender.com" + data.url, "_blank");
         } catch (error) {
           console.error("Erreur génération PDF:", error);
           alert(`Erreur: ${error.message}`);
